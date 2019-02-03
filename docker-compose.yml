@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  db:
+     image: mnementh64/docker-postgresql-cstore:10.3
+     hostname: db
+     container_name: db
+     environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: postgres
+     restart: always
+     ports:
+       - 5432:5432
+     volumes:
+       - db-data:/var/lib/postgresql/data
+       - db-logs:/var/log/postgresql
+       - ./scripts:/root/scripts
+       - ./data:/root/data
+  adminer:
+     image: adminer
+     hostname: adminer
+     container_name: adminer
+     restart: always
+     ports:
+       - 8080:8080
+
+volumes:
+  db-data:
+  db-logs:
