@@ -175,3 +175,86 @@ INNER JOIN sport_location sl ON se.location_id=sl.id
 WHERE EXTRACT(month FROM date[array_length(date, 1)] :: DATE) IS NOT NULL
 GROUP BY CUBE(month, sport_type_name, location_name)
 ORDER BY month, sport_type_name, location_name;
+
+-- Without CUBE
+
+  SELECT dd.month            AS month,
+         de.sport_type_name  AS sport_type_name,
+         de.location_name    AS location_name,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY dd.month, de.sport_type_name, de.location_name
+UNION ALL
+  SELECT NULL,
+         de.sport_type_name  AS sport_type_name,
+         de.location_name    AS location_name,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY de.sport_type_name, de.location_name
+UNION ALL
+  SELECT dd.month            AS month,
+         NULL,
+         de.location_name    AS location_name,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY dd.month, de.location_name
+UNION ALL
+  SELECT dd.month            AS month,
+         de.sport_type_name  AS sport_type_name,
+         NULL,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY dd.month, de.sport_type_name
+UNION ALL
+  SELECT NULL,
+         NULL,
+         de.location_name    AS location_name,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY de.location_name
+UNION ALL
+  SELECT dd.month            AS month,
+         NULL,
+         NULL,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY dd.month
+UNION ALL
+  SELECT NULL,
+         de.sport_type_name  AS sport_type_name,
+         NULL,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+  GROUP BY de.sport_type_name
+UNION ALL
+  SELECT NULL,
+         NULL,
+         NULL,
+         COUNT(*)            AS tickets_sold,
+         SUM(original_price) AS total_sales
+  FROM factPurchase fp
+  INNER JOIN dimDate dd   ON fp.date_key=dd.date_key
+  INNER JOIN dimEvents de ON fp.event_key=de.event_key
+ORDER BY 1 NULLS LAST, 2 NULLS LAST, 3 NULLS LAST
+
