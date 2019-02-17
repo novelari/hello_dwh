@@ -737,69 +737,11 @@ CREATE TABLE payment (
     rental_id integer NOT NULL,
     amount numeric(5,2) NOT NULL,
     payment_date timestamp with time zone NOT NULL
-) PARTITION BY RANGE(payment_date);
+);
 
 ALTER TABLE payment OWNER TO postgres;
 
---
--- Name: payment_p2017_01; Type: TABLE; Schema: public; Owner: postgres
---
 
-CREATE TABLE payment_p2017_01 PARTITION OF payment
-    FOR VALUES FROM ('2017-01-01 00:00:00+0:00') TO ('2017-02-01 00:00:00+0:00');
-
-ALTER TABLE payment_p2017_01 OWNER TO postgres;
-
---
--- Name: payment_p2017_02; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE payment_p2017_02 PARTITION OF payment
-    FOR VALUES FROM ('2017-02-01 00:00:00+0:00') TO ('2017-03-01 00:00:00+0:00');
-
-ALTER TABLE payment_p2017_02 OWNER TO postgres;
-
---
--- Name: payment_p2017_03; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE payment_p2017_03 PARTITION OF payment
-    FOR VALUES FROM ('2017-03-01 00:00:00+0:00') TO ('2017-04-01 00:00:00+0:00');
-
-
-ALTER TABLE payment_p2017_03 OWNER TO postgres;
-
---
--- Name: payment_p2017_04; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE payment_p2017_04 PARTITION OF payment
-    FOR VALUES FROM ('2017-04-01 00:00:00+0:00') TO ('2017-05-01 00:00:00+0:00');
-
-ALTER TABLE payment_p2017_04 OWNER TO postgres;
-
---
--- Name: payment_p2017_05; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE payment_p2017_05 PARTITION OF payment
-    FOR VALUES FROM ('2017-05-01 00:00:00+0:00') TO ('2017-06-01 00:00:00+0:00');
-
-ALTER TABLE payment_p2017_05 OWNER TO postgres;
-
---
--- Name: payment_p2017_06; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE payment_p2017_06 PARTITION OF payment
-    FOR VALUES FROM ('2017-06-01 00:00:00+0:00') TO ('2017-07-01 00:00:00+0:00');
-
-
-ALTER TABLE payment_p2017_06 OWNER TO postgres;
-
---
--- Name: rental_rental_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
 
 CREATE SEQUENCE rental_rental_id_seq
     START WITH 1
@@ -1129,94 +1071,18 @@ CREATE INDEX idx_fk_original_language_id ON film USING btree (original_language_
 
 
 --
--- Name: idx_fk_payment_p2017_01_customer_id; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_fk_payment_customer_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_fk_payment_p2017_01_customer_id ON payment_p2017_01 USING btree (customer_id);
-
-
---
--- Name: idx_fk_payment_p2017_01_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_01_staff_id ON payment_p2017_01 USING btree (staff_id);
-
+CREATE INDEX idx_fk_payment_customer_id ON payment USING btree (customer_id);
 
 --
--- Name: idx_fk_payment_p2017_02_customer_id; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_fk_payment_staff_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_fk_payment_p2017_02_customer_id ON payment_p2017_02 USING btree (customer_id);
+CREATE INDEX idx_fk_payment_staff_id ON payment USING btree (staff_id);
 
 
---
--- Name: idx_fk_payment_p2017_02_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_02_staff_id ON payment_p2017_02 USING btree (staff_id);
-
-
---
--- Name: idx_fk_payment_p2017_03_customer_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_03_customer_id ON payment_p2017_03 USING btree (customer_id);
-
-
---
--- Name: idx_fk_payment_p2017_03_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_03_staff_id ON payment_p2017_03 USING btree (staff_id);
-
-
---
--- Name: idx_fk_payment_p2017_04_customer_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_04_customer_id ON payment_p2017_04 USING btree (customer_id);
-
-
---
--- Name: idx_fk_payment_p2017_04_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_04_staff_id ON payment_p2017_04 USING btree (staff_id);
-
-
---
--- Name: idx_fk_payment_p2017_05_customer_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_05_customer_id ON payment_p2017_05 USING btree (customer_id);
-
-
---
--- Name: idx_fk_payment_p2017_05_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_05_staff_id ON payment_p2017_05 USING btree (staff_id);
-
-
---
--- Name: idx_fk_payment_p2017_06_customer_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_06_customer_id ON payment_p2017_06 USING btree (customer_id);
-
-
---
--- Name: idx_fk_payment_p2017_06_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_payment_p2017_06_staff_id ON payment_p2017_06 USING btree (staff_id);
-
-
---
--- Name: idx_fk_staff_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_fk_staff_id ON payment USING btree (staff_id);
 
 
 --
@@ -1512,33 +1378,7 @@ ALTER TABLE ONLY store
 -- PostgreSQL database dump complete
 --
 
-
-ALTER TABLE payment_p2017_01
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
-
-ALTER TABLE payment_p2017_02
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
-
-ALTER TABLE payment_p2017_03
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
-
-ALTER TABLE payment_p2017_04
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
-
-ALTER TABLE payment_p2017_05
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
-
-ALTER TABLE payment_p2017_06
-    ADD FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
-    ADD FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
-    ADD FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
+ALTER TABLE ONLY payment
+    ADD CONSTRAINT payment_customer_id_fkey FOREIGN KEY(customer_id) REFERENCES customer(customer_id),
+    ADD CONSTRAINT payment_staff_id_fkey FOREIGN KEY(staff_id) REFERENCES staff(staff_id),
+    ADD CONSTRAINT payment_rental_id_fkey FOREIGN KEY(rental_id) REFERENCES rental(rental_id);
